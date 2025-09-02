@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # Development version with SQLite - no database container needed
+  app:
+    build: .
+    container_name: pages-cms-dev
+    ports:
+      - "3000:3000"
+    environment:
+      # Local SQLite database
+      DATABASE_URL: "file:./local.db"
+      
+      # Base URL for development
+      BASE_URL: "http://localhost:3000"
+      
+      # GitHub App configuration - load from .env.local
+      CRYPTO_KEY: ${CRYPTO_KEY}
+      GITHUB_APP_ID: ${GITHUB_APP_ID}
+      GITHUB_APP_NAME: ${GITHUB_APP_NAME}
+      GITHUB_APP_PRIVATE_KEY: ${GITHUB_APP_PRIVATE_KEY}
+      GITHUB_APP_WEBHOOK_SECRET: ${GITHUB_APP_WEBHOOK_SECRET}
+      GITHUB_APP_CLIENT_ID: ${GITHUB_APP_CLIENT_ID}
+      GITHUB_APP_CLIENT_SECRET: ${GITHUB_APP_CLIENT_SECRET}
+      
+      # Email configuration
+      RESEND_API_KEY: ${RESEND_API_KEY}
+      RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL}
+      
+      # Optional configuration
+      FILE_CACHE_TTL: ${FILE_CACHE_TTL:-1440}
+      PERMISSION_CACHE_TTL: ${PERMISSION_CACHE_TTL:-60}
+      CRON_SECRET: ${CRON_SECRET}
+    volumes:
+      # Mount .env.local for development
+      - ./.env.local:/app/.env.local:ro
+      # Mount SQLite database file to persist data
+      - ./local.db:/app/local.db

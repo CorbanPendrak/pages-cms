@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database service
+  postgres:
+    image: postgres:15-alpine
+    container_name: pages-cms-db
+    environment:
+      POSTGRES_DB: pagescms
+      POSTGRES_USER: pagescms
+      POSTGRES_PASSWORD: pagescms_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pagescms -d pagescms"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Pages CMS application
+  app:
+    build: .
+    container_name: pages-cms-app
+    ports:
+      - "3000:3000"
+    environment:
+      # Database configuration for container
+      DATABASE_URL: "postgresql://pagescms:pagescms_password@postgres:5432/pagescms"
+      
+      # Base URL - update this to your actual domain or ngrok URL
+      BASE_URL: "http://localhost:3000"
+      
+      # Required GitHub App configuration - copy from .env.local
+      CRYPTO_KEY: ${CRYPTO_KEY}
+      GITHUB_APP_ID: ${GITHUB_APP_ID}
+      GITHUB_APP_NAME: ${GITHUB_APP_NAME}
+      GITHUB_APP_PRIVATE_KEY: ${GITHUB_APP_PRIVATE_KEY}
+      GITHUB_APP_WEBHOOK_SECRET: ${GITHUB_APP_WEBHOOK_SECRET}
+      GITHUB_APP_CLIENT_ID: ${GITHUB_APP_CLIENT_ID}
+      GITHUB_APP_CLIENT_SECRET: ${GITHUB_APP_CLIENT_SECRET}
+      
+      # Email configuration
+      RESEND_API_KEY: ${RESEND_API_KEY}
+      RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL}
+      
+      # Optional configuration
+      FILE_CACHE_TTL: ${FILE_CACHE_TTL:-1440}
+      PERMISSION_CACHE_TTL: ${PERMISSION_CACHE_TTL:-60}
+      CRON_SECRET: ${CRON_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      # Mount .env.local for development
+      - ./.env.local:/app/.env.local:ro
+
+volumes:
+  postgres_data:

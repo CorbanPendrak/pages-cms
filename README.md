@@ -40,6 +40,20 @@ This online version is identical to what's in this repo, but you can also instal
 
 ## Install and Deploy
 
+### Quick Start with Docker 🐳
+
+The fastest way to run Pages CMS locally is with Docker:
+
+```bash
+git clone https://github.com/pages-cms/pages-cms.git
+cd pages-cms
+cp .env.local.example .env.local
+# Edit .env.local with your GitHub App credentials
+docker-compose -f docker-compose.dev.yml up -d
+```
+
+📖 **[Complete Docker Setup Guide](DOCKER.md)** - Includes GitHub App setup, environment configuration, and troubleshooting.
+
 ### Create a GitHub App
 
 Whether you're installing Pages CMS locally or deploying it online, you will need a GitHub App.
