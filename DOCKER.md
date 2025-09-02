@@ -8,6 +8,20 @@ This guide explains how to run Pages CMS locally using Docker containers, with s
 - [GitHub App](#github-app-setup) configured for Pages CMS
 - [Resend account](https://resend.com) for email functionality
 
+## Verification Script
+
+We provide a helpful verification script to check your Docker setup:
+
+```bash
+./scripts/verify-docker.sh
+```
+
+This script will:
+- ✅ Check if Docker and Docker Compose are installed
+- ✅ Validate Docker Compose configuration files
+- ✅ Verify environment variables are configured
+- ✅ Provide next steps for running containers
+
 ## Quick Start
 
 ### 1. Clone and Setup

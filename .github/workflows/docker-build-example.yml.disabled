@@ -1,0 +1,35 @@
+# Example GitHub Actions workflow for testing Docker builds
+# This file is for reference only - rename to .yml and move to .github/workflows/ to use
+
+name: Docker Build Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Build Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: false
+        tags: pages-cms:test
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        
+    - name: Test Docker Compose configuration
+      run: |
+        docker-compose config
+        docker-compose -f docker-compose.dev.yml config
